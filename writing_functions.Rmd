@@ -215,6 +215,7 @@ BUT, we don't want to have to do this for each page... turn it into a function
 
 ```{r}
 read_page_reviews = function(url){
+  
   html = read_html(url)
 
   review_titles = 
@@ -273,6 +274,20 @@ all_reviews =
     read_page_reviews(dynamite_urls[4]),
     read_page_reviews(dynamite_urls[5])
   )
+```
+
+## Mean scoping example
+
+```{r}
+f = function(x) {
+  z = x + y
+  z
+}
+
+x = 1
+y = 2
+
+f(x = y)
 ```
 
 
