@@ -12,11 +12,11 @@ x_vec = rnorm(30, mean = 5, sd = 3)
 (x_vec - mean(x_vec)) / sd(x_vec)
 ```
 
-    ##  [1] -1.47736535 -1.14244527  0.97405838 -2.35176264 -0.83786881 -0.45021565
-    ##  [7]  1.31316193  0.14701429  1.03941400  1.60648228  0.05336157 -0.24357279
-    ## [13] -0.17080767 -0.21386548 -1.13634547  0.54722910 -0.27581672  1.90881723
-    ## [19] -1.26005316  0.23780086 -0.06750161 -1.63397862  0.88632107  0.44398982
-    ## [25]  0.41579802 -0.02459075  0.88923872  0.64983528  0.62079575 -0.44712832
+    ##  [1]  0.63348530 -0.75490205  1.98814334 -0.63198394  0.85447812 -1.75649100
+    ##  [7]  1.66174737 -0.18374996 -1.38195144  0.77236483  1.35045160  2.07177880
+    ## [13] -0.53395251  0.95803561 -0.50076705 -0.20248761 -0.41999905 -0.28109745
+    ## [19]  0.09856713 -0.69671565 -0.03599033  0.69501595 -0.56011216 -1.59637971
+    ## [25] -1.14277327 -0.82993857 -0.15922422  0.58606567 -0.49503271  0.49341496
 
 ``` r
 ## gives you z scores that you can look at and scan for sd 
@@ -43,11 +43,11 @@ z_scores = function(x) {
 z_scores(x_vec)
 ```
 
-    ##  [1] -1.3989667 -0.3667038  6.1566079 -4.0939614  0.5720364  1.7668288
-    ##  [7]  7.2017647  3.6075613  6.3580416  8.1058123  3.3189127  2.4037263
-    ## [13]  2.6279969  2.4952877 -0.3479035  4.8410702  2.3043467  9.0376440
-    ## [19] -0.7291851  3.8873761  2.9463982 -1.8816671  5.8861913  4.5228746
-    ## [25]  4.4359842  3.0786545  5.8951838  5.1573144  5.0678112  1.7763443
+    ##  [1]  4.7759391  0.4060417  9.0396748  0.7929218  5.4715058 -2.7464222
+    ##  [7]  8.0123556  2.2037216 -1.5675729  5.2130572  7.0325638  9.3029143
+    ## [13]  1.1014721  5.7974491  1.2059221  2.1447455  1.4601364  1.8973240
+    ## [19]  3.0923041  0.5891812  2.6687895  4.9696045  1.0191356 -2.2424779
+    ## [25] -0.8147685  0.1698670  2.2809154  4.6266876  1.2239707  4.3350729
 
 Try my fucntion on some other things — these should give errors…
 
@@ -89,3 +89,92 @@ z_scores(c(TRUE, TRUE, FALSE, TRUE))
 
 update the function (done in the function step above with adding if
 statements)
+
+## Multiple outputs
+
+``` r
+mean_and_sd = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop("Input must be numeric")
+  }
+  
+  if (length(x)  < 3) {
+    stop("Input must have at least 3 numbers")
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+  
+  tibble(
+    mean = mean_x, 
+    sd = sd_x
+  )
+}
+## tibble makes it a dataframe 
+```
+
+Check that the function works
+
+``` r
+x_vec = rnorm(100, mean = 3, sd = 4)
+## can do it this way or can make a function!! 
+
+mean_and_sd(x_vec)
+```
+
+    ## # A tibble: 1 x 2
+    ##    mean    sd
+    ##   <dbl> <dbl>
+    ## 1  2.25  3.81
+
+## Multiple inputs
+
+``` r
+sim_data = 
+  tibble(
+    x = rnorm(n = 100, mean = 4, sd = 3)
+  )
+
+sim_data %>% 
+  summarize(
+    mean = mean(x), 
+    sd = sd(x)
+  )
+```
+
+    ## # A tibble: 1 x 2
+    ##    mean    sd
+    ##   <dbl> <dbl>
+    ## 1  4.19  3.32
+
+I’d like to do this with a function…..
+
+``` r
+sim_mean_sd = function(samp_size, mu, sigma) {
+  
+  sim_data = 
+    tibble(
+      x = rnorm(n = samp_size, mean = mu, sd = sigma)
+    )
+
+sim_data %>% 
+  summarize(
+    mean = mean(x), 
+    sd = sd(x)
+  )
+}
+
+sim_mean_sd(100, 6, 3)
+```
+
+    ## # A tibble: 1 x 2
+    ##    mean    sd
+    ##   <dbl> <dbl>
+    ## 1  6.21  3.14
+
+``` r
+## n = 100, mean = 6, sd = 3
+## try to use named matching instead of purely position matching
+## you can also set default values in the function; which can be overwritten with named matching 
+```
